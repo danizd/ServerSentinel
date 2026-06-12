@@ -10,7 +10,7 @@ services:
       - "${SSH_PORT:-2222}:${SSH_PORT:-2222}"
       - "${FTP_PORT:-2121}:${FTP_PORT:-2121}"
       - "${MYSQL_PORT:-3306}:${MYSQL_PORT:-3306}"
-      - "${BLOG_PORT:-8080}:${BLOG_PORT:-8080}"
+      - "${BLOG_PORT:-8080}:8080"
     volumes:
       - ./data:/app/data
       - ./blog:/app/blog
