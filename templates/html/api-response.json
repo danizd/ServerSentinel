@@ -1,0 +1,38 @@
+{
+  "status": "ok",
+  "timestamp": "{{TIMESTAMP}}",
+  "data": {
+    "users": [
+      { "id": 1, "username": "admin", "role": "superuser", "last_login": "{{TIMESTAMP}}", "status": "active" },
+      { "id": 2, "username": "operator", "role": "operator", "last_login": "{{TIMESTAMP}}", "status": "active" },
+      { "id": 3, "username": "viewer", "role": "readonly", "last_login": "{{TIMESTAMP}}", "status": "active" },
+      { "id": 4, "username": "deploy", "role": "deployer", "last_login": "{{TIMESTAMP}}", "status": "inactive" },
+      { "id": 5, "username": "monitor", "role": "operator", "last_login": "{{TIMESTAMP}}", "status": "active" }
+    ],
+    "server": {
+      "hostname": "srv-prod-01",
+      "os": "Ubuntu 20.04.3 LTS",
+      "kernel": "5.4.0-91-generic",
+      "uptime": "42d 7h 13m",
+      "cpu_cores": 8,
+      "ram_total_mb": 32768,
+      "ram_used_mb": 14206,
+      "disk_total_gb": 500,
+      "disk_used_gb": 217
+    },
+    "logs": [
+      { "timestamp": "{{TIMESTAMP}}", "level": "info", "message": "System health check passed" },
+      { "timestamp": "{{TIMESTAMP}}", "level": "warn", "message": "High memory usage detected on node-03" },
+      { "timestamp": "{{TIMESTAMP}}", "level": "info", "message": "Backup completed successfully" },
+      { "timestamp": "{{TIMESTAMP}}", "level": "error", "message": "Connection timeout to database replica" },
+      { "timestamp": "{{TIMESTAMP}}", "level": "info", "message": "SSL certificate renewed" }
+    ],
+    "services": [
+      { "name": "nginx", "status": "running", "pid": 1234 },
+      { "name": "postgresql", "status": "running", "pid": 2345 },
+      { "name": "redis", "status": "running", "pid": 3456 },
+      { "name": "node-app", "status": "running", "pid": 4567 },
+      { "name": "cron", "status": "running", "pid": 5678 }
+    ]
+  }
+}

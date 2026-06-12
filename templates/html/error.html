@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servidor — Inicio de Sesion</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-container {
+      background: #111;
+      border: 1px solid #1a3a1a;
+      border-radius: 4px;
+      padding: 40px;
+      width: 380px;
+      box-shadow: 0 0 30px rgba(0,255,65,0.05);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .login-header h1 {
+      color: #00ff41;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .login-header .subtitle {
+      color: #555;
+      font-size: 12px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      color: #777;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid #2a2a2a;
+      color: #e0e0e0;
+      padding: 12px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: #00ff41;
+    }
+    .btn {
+      width: 100%;
+      background: #00ff41;
+      color: #0a0a0a;
+      border: none;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #00cc33;
+    }
+    .error-message {
+      background: #1a0000;
+      border: 1px solid #3a1a1a;
+      color: #ff4444;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      border-radius: 2px;
+    }
+    .demo-hint {
+      text-align: center;
+      color: #444;
+      font-size: 11px;
+      margin-top: 20px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      color: #333;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>&#9618; Panel del Servidor</h1>
+      <div class="subtitle">Administracion del Sistema</div>
+    </div>
+
+    <div class="error-message">Usuario o contrasena invalidos. Acceso denegado.</div>
+
+    <form action="/login" method="POST">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" autocomplete="off" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">Contrasena</label>
+        <input type="password" id="password" name="password" autocomplete="off">
+      </div>
+      <button type="submit" class="btn">Iniciar Sesion</button>
+    </form>
+
+    <div class="demo-hint">credenciales de demo: admin / admin</div>
+    <div class="footer">Apache/2.4.41 (Ubuntu) Server en 127.0.0.1 Puerto 80</div>
+  </div>
+</body>
+</html>
