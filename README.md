@@ -10,22 +10,20 @@ Sistema honeypot que simula servidores reales para capturar y analizar comportam
 - **Blog Estático**: Reportes publicados como HTML standalone
 - **Rate Limiting**: Protección contra saturación del honeypot
 - **Clasificación de Severidad**: low, medium, high, critical
+- **UI en Español**: Todas las interfaces web en español
 
 ## Requisitos
 
 - Node.js >= 18.0.0
-- Docker y Docker Compose (opcional, para despliegue en contenedor)
+- Docker y Docker Compose (para despliegue en contenedor)
 - Ollama (opcional, para respuestas LLM)
 
 ## Instalación Rápida
 
 ```bash
 # Clonar repositorio
-git clone <url> serversentinel
-cd serversentinel
-
-# Instalar dependencias
-npm install
+git clone https://github.com/danizd/ServerSentinel.git
+cd ServerSentinel
 
 # Configurar
 cp .env.example .env
@@ -58,26 +56,9 @@ Todas las variables se configuran en el archivo `.env`:
 | `ADMIN_USER` | admin | Usuario del panel admin falso |
 | `ADMIN_PASS` | admin | Contraseña del panel admin falso |
 
-## Despliegue en Producción
+## Despliegue
 
-### Opción 1: Directo en el host
-
-```bash
-# Instalar dependencias
-npm install
-
-# Configurar
-cp .env.example .env
-nano .env  # Editar configuración
-
-# Ejecutar en background (Linux)
-nohup node src/index.js > logs/server.log 2>&1 &
-
-# Instalar cron jobs
-bash scripts/setup-cron.sh
-```
-
-### Opción 2: Docker Compose (Recomendado)
+### Opción 1: Docker Compose (Recomendado)
 
 ```bash
 # Configurar
@@ -94,26 +75,57 @@ docker-compose logs -f honeypot
 docker-compose down
 ```
 
-### Opción 3: Docker en Raspberry Pi
+### Opción 2: Raspberry Pi con Tailscale Funnel
+
+Versión ligera sin Ollama (~256MB RAM):
 
 ```bash
-# En la RPi4, clonar y configurar
-git clone <url> serversentinel
-cd serversentinel
+# Clonar y configurar
+git clone https://github.com/danizd/ServerSentinel.git
+cd ServerSentinel
 cp .env.example .env
 
-# Editar .env para RPi4
-# - Reducir LLM_MODEL a un modelo más ligero
-# - Aumentar DATA_RETENTION_DAYS si el SD es grande
-# - Los puertos 80/22/21/3306 requieren sudo
+# Ejecutar con compose ligero
+docker compose -f docker-compose.lite.yml up -d
 
-# Ejecutar con docker-compose
-sudo docker-compose up -d
+# Exponer a internet via Tailscale Funnel
+tailscale funnel 80       # honeypot HTTP publico
+tailscale funnel 8080     # blog publico
+```
+
+Resultado:
+- `https://<tu-raspberry>.ts.net` → honeypot HTTP (captura credenciales, payloads)
+- `https://<tu-raspberry>.ts.net:8080` → blog con reportes diarios
+
+### Opción 3: Directo en el host
+
+```bash
+npm install
+cp .env.example .env
+nano .env
+
+# Ejecutar en background (Linux)
+nohup node src/index.js > logs/server.log 2>&1 &
+
+# Instalar cron jobs
+bash scripts/setup-cron.sh
 ```
 
 ## Exposición Pública
 
-### Cloudflare Tunnel (Recomendado)
+### Tailscale Funnel (Más Simple)
+
+Requiere Tailscale instalado. No expone tu IP real ni abre puertos en el router.
+
+```bash
+# Exponer honeypot HTTP
+tailscale funnel 80
+
+# Exponer blog de reportes
+tailscale funnel 8080
+```
+
+### Cloudflare Tunnel
 
 ```bash
 # Instalar cloudflared
@@ -145,18 +157,28 @@ En tu router, redirigir:
 - Puerto 2121 → IP del servidor:2121 (FTP)
 - Puerto 3306 → IP del servidor:3306 (MySQL)
 
-> ⚠️ **Advertencia**: Exponer directamente a Internet requiere firewall configurado. Usa fail2ban y revisa logs regularmente.
+> **Advertencia**: Exponer directamente a Internet requiere firewall configurado. Usa fail2ban y revisa logs regularmente.
 
 ## Monitoreo
 
-### Verificar estado de servicios
+### Ver logs
 
 ```bash
-# Linux
-bash scripts/health-check.sh
+# Docker
+docker-compose logs -f honeypot
 
-# Ver logs
-tail -f logs/health-check.log
+# Linux (directo)
+tail -f logs/server.log
+```
+
+### Generar reporte manual
+
+```bash
+# Docker
+docker exec sentinel-honeypot node src/pipeline/run.js
+
+# Directo
+node src/pipeline/run.js
 ```
 
 ### Revisar ataques capturados
@@ -165,14 +187,8 @@ tail -f logs/health-check.log
 # Acceder al blog de reportes
 # http://localhost:8080/
 
-# Query directa a la DB (requiere sqlite3)
+# Query directa a la DB
 sqlite3 data/sentinel.db "SELECT source_ip, service, COUNT(*) FROM attacks GROUP BY source_ip, service ORDER BY COUNT(*) DESC LIMIT 10;"
-```
-
-### Generar reporte manual
-
-```bash
-node src/pipeline/run.js 2026-06-12
 ```
 
 ## Cron Jobs
@@ -238,8 +254,8 @@ El honeypot funciona sin LLM (modo degradado). Las respuestas HTTP usan HTML est
 ### SQLite "database is locked"
 Verifica que no haya otra instancia corriendo. El WAL mode maneja concurrencia, pero un solo writer a la vez.
 
-### RPi4: Out of Memory
-Reduce `OLLAMA_NUM_PARALLEL=1` en el entorno de Docker o usa un modelo más pequeño.
+### Raspberry Pi: Out of Memory
+Usa `docker-compose.lite.yml` que excluye Ollama y limita memoria a 256MB.
 
 ## Licencia
 
