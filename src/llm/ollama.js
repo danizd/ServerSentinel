@@ -42,6 +42,7 @@ export function createOllamaClient(config) {
       clearTimeout(timer);
 
       if (!res.ok) {
+        console.error(`[LLM] generate() HTTP ${res.status}: ${res.statusText}`);
         circuitBreaker.recordFailure();
         return null;
       }
