@@ -19,4 +19,4 @@ Genera:
 2. Tendencias identificadas
 3. IOCs (Indicadores de Compromiso) en formato: tipo, valor, confianza
 
-Responde en inglés. Formato Markdown.`;
+Responde en español. Formato Markdown.`;

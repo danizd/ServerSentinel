@@ -110,3 +110,7 @@ export function reportExists(db, date) {
   const row = queryOne(db, `SELECT id FROM reports WHERE report_date = ?`, [date]);
   return !!row;
 }
+
+export function getReportStats(db, date) {
+  return queryOne(db, `SELECT attacks_total, unique_ips FROM reports WHERE report_date = ?`, [date]);
+}

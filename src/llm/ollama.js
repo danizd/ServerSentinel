@@ -50,6 +50,7 @@ export function createOllamaClient(config) {
       circuitBreaker.recordSuccess();
       return data.response;
     } catch (err) {
+      console.error(`[LLM] generate() failed: ${err.message}`);
       circuitBreaker.recordFailure();
       return null;
     }
@@ -74,7 +75,7 @@ export function createOllamaClient(config) {
       .replace('{{services}}', JSON.stringify(attackData.services_breakdown))
       .replace('{{attacks_data}}', attackData.attacks_json);
 
-    const response = await generate(prompt, { maxTokens: 2000, timeout: 30000 });
+    const response = await generate(prompt, { maxTokens: 2000, timeout: 120000 });
     return response;
   }
 

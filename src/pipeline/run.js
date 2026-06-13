@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { readdirSync, writeFileSync, mkdirSync } from 'fs';
 import { getDb, closeDb, saveDb } from '../db/connection.js';
 import { migrate } from '../db/migrations.js';
-import { getAttacksByDate, getDailyStats, insertReport, reportExists } from '../db/queries.js';
+import { getAttacksByDate, getDailyStats, insertReport, reportExists, getReportStats } from '../db/queries.js';
 import { purgeOldData } from '../db/purge.js';
 import { createOllamaClient } from '../llm/ollama.js';
 import { generateReport, generateIndex } from './nightly.js';
@@ -95,12 +95,16 @@ async function runPipeline(date) {
     .filter(f => f.endsWith('.html') && f !== 'index.html')
     .sort()
     .reverse()
-    .map(f => ({
-      filename: f,
-      date: f.replace('.html', ''),
-      attacks_total: 0,
-      unique_ips: 0
-    }));
+    .map(f => {
+      const date = f.replace('.html', '');
+      const report = getReportStats(db, date);
+      return {
+        filename: f,
+        date,
+        attacks_total: report?.attacks_total || 0,
+        unique_ips: report?.unique_ips || 0
+      };
+    });
 
   const indexHtml = generateIndex(htmlFiles);
   writeFileSync(join(BLOG_DIR, 'index.html'), indexHtml, 'utf-8');
