@@ -146,7 +146,7 @@ h1{color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:10px
   } else {
     for (const r of reports) {
       html += `<div class="report">
-<a href="${r.filename}">${r.date}</a>
+<a href="/blog/${r.filename}">${r.date}</a>
 <div class="meta">${r.attacks_total} ataques — ${r.unique_ips} IPs unicos</div>
 </div>`;
     }
