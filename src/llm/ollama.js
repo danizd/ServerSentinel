@@ -76,7 +76,7 @@ export function createOllamaClient(config) {
       .replace('{{services}}', JSON.stringify(attackData.services_breakdown))
       .replace('{{attacks_data}}', attackData.attacks_json);
 
-    const response = await generate(prompt, { maxTokens: 200, timeout: 300000 });
+    const response = await generate(prompt, { maxTokens: 100, timeout: 600000 });
     return response;
   }
 
